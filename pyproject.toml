@@ -1,0 +1,28 @@
+[project]
+name = "llmdev"
+version = "0.1.0"
+description = "LLM app dev study"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "flask==3.1.0",
+    "httpx==0.27.2",
+    "jupyter==1.1.1",
+    "langchain-community==0.3.7",
+    "langchain-core==0.3.18",
+    "langchain-openai==0.2.8",
+    "langchain-text-splitters==0.3.2",
+    "langgraph==0.2.48",
+    "llama-index==0.11.23",
+    "matplotlib==3.9.2",
+    "numpy==1.26.4",
+    "openai==1.54.4",
+    "openpyxl==3.1.5",
+    "pandas==2.2.3",
+    "pydantic==2.9.2",
+    "pypdf==5.1.0",
+    "pytest==8.3.3",
+    "python-dotenv==1.0.1",
+    "tavily-python==0.5.0",
+    "tiktoken==0.8.0",
+]
