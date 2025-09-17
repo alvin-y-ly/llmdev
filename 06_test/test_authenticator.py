@@ -12,22 +12,62 @@ import pytest
 from authenticator import Authenticator
 
 
-def test_authenticator():
+@pytest.fixture
+def authenticator():
     auth = Authenticator()
+    yield auth
 
-    auth.register("a", "111")
-    auth.register("b", "222")
-    auth.register("c", "333")
 
+def test_register(authenticator):
+    authenticator.register("a", "111")
+    authenticator.register("b", "222")
+    authenticator.register("c", "333")
+
+
+def test_register_exist(authenticator):
+    authenticator.register("a", "111")
     with pytest.raises(ValueError, match="エラー: ユーザーは既に存在します。"):
-        auth.register("a", "444")
+        authenticator.register("a", "444")
 
-    r = auth.login("a", "111")
+
+def test_login(authenticator):
+    authenticator.register("a", "111")
+    authenticator.register("b", "222")
+    authenticator.register("c", "333")
+
+    r = authenticator.login("a", "111")
     assert r == "ログイン成功"
-    r = auth.login("b", "222")
+    r = authenticator.login("b", "222")
     assert r == "ログイン成功"
+
+
+def test_login_fail(authenticator):
+    authenticator.register("a", "111")
+    authenticator.register("b", "222")
+    authenticator.register("c", "333")
 
     with pytest.raises(ValueError, match="エラー: ユーザー名またはパスワードが正しくありません。"):
-        auth.login("a", "000")
+        authenticator.login("a", "000")
     with pytest.raises(ValueError, match="エラー: ユーザー名またはパスワードが正しくありません。"):
-        auth.login("d", "000")
+        authenticator.login("d", "000")
+
+
+# def test_authenticator():
+#     auth = Authenticator()
+
+#     auth.register("a", "111")
+#     auth.register("b", "222")
+#     auth.register("c", "333")
+
+#     with pytest.raises(ValueError, match="エラー: ユーザーは既に存在します。"):
+#         auth.register("a", "444")
+
+#     r = auth.login("a", "111")
+#     assert r == "ログイン成功"
+#     r = auth.login("b", "222")
+#     assert r == "ログイン成功"
+
+#     with pytest.raises(ValueError, match="エラー: ユーザー名またはパスワードが正しくありません。"):
+#         auth.login("a", "000")
+#     with pytest.raises(ValueError, match="エラー: ユーザー名またはパスワードが正しくありません。"):
+#         auth.login("d", "000")
