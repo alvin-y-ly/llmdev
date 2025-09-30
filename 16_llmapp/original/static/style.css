@@ -125,3 +125,22 @@ body {
 .clear-button:hover {
   background-color: #c82333;        /* ホバー時に赤色を少し暗くする */
 }
+
+#chat-form .row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+#chat-form label {
+    font-size: 14px;
+    color: #555;
+}
+
+#chat-form input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}

@@ -8,7 +8,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain.tools.retriever import create_retriever_tool
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -127,19 +127,25 @@ def build_graph(model_name, memory):
     return graph_builder.compile(checkpointer=memory)
 
 # ===== グラフを実行する関数 =====
-def stream_graph_updates(graph: StateGraph, user_message: str, thread_id):
+def stream_graph_updates(graph: StateGraph, user_message: str, thread_id, persona: str):
     """
     ユーザーからのメッセージを元に、グラフを実行し、チャットボットの応答をストリーミングします。
     """
+    sys_msg = [
+        f"あなたは{persona}なアシスタントです。",
+        "回答は日本語で、簡潔かつ正確に。",
+        "可能なら箇条書きを活用。",
+    ]
+    system = SystemMessage(content='\n'.join(sys_msg))
     response = graph.invoke(
-        {"messages": [("user", user_message)]},
+        {"messages": [system, ("user", user_message)]},
         {"configurable": {"thread_id": thread_id}},
         stream_mode="values"
     )
     return response["messages"][-1].content
 
 # ===== 応答を返す関数 =====
-def get_bot_response(user_message, memory, thread_id):
+def get_bot_response(user_message, memory, thread_id, persona):
     """
     ユーザーのメッセージに基づき、ボットの応答を取得します。
     初回の場合、新しいグラフを作成します。
@@ -150,7 +156,7 @@ def get_bot_response(user_message, memory, thread_id):
         graph = build_graph(MODEL_NAME, memory)
 
     # グラフを実行してボットの応答を取得
-    return stream_graph_updates(graph, user_message, thread_id)
+    return stream_graph_updates(graph, user_message, thread_id, persona)
 
 # ===== メッセージの一覧を取得する関数 =====
 def get_messages_list(memory, thread_id):

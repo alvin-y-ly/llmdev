@@ -10,6 +10,10 @@
 </div>
 
 <form method="POST" action="/" id="chat-form">
+    <div class="row">
+        <label for="persona">口調</label>
+        <input type="text" id="persona" name="persona" value="{{ persona }}" placeholder="例: フレンドリー / ビジネス / 技術的 など">
+    </div>
     <div class="input-box">
         <textarea name="user_message" id="user-input" placeholder="メッセージを入力..." required autofocus></textarea>
         <button type="submit" id="submit-button">送信</button>

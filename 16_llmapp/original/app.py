@@ -21,20 +21,21 @@ def index():
         # メモリをクリア
         memory.storage.clear()
         # 対話履歴を初期化
-        response = make_response(render_template('index.html', messages=[]))
+        response = make_response(render_template('index.html', messages=[], persona="フレンドリー"))
         return response
 
     # ユーザーからのメッセージを取得
     user_message = request.form['user_message']
+    persona = request.form.get("persona", "フレンドリー")
 
     # ボットのレスポンスを取得（メモリに保持）
-    get_bot_response(user_message, memory, session['thread_id'])
+    get_bot_response(user_message, memory, session['thread_id'], persona)
 
     # メモリからメッセージの取得
     messages = get_messages_list(memory, session['thread_id'])
 
     # レスポンスを返す
-    return make_response(render_template('index.html', messages=messages))
+    return make_response(render_template('index.html', messages=messages, persona=persona))
 
 @app.route('/clear', methods=['POST'])
 def clear():
@@ -44,7 +45,7 @@ def clear():
     # メモリをクリア
     memory.storage.clear()
     # 対話履歴を初期化
-    response = make_response(render_template('index.html', messages=[]))
+    response = make_response(render_template('index.html', messages=[], persona="フレンドリー"))
     return response
 
 if __name__ == '__main__':
